@@ -50,7 +50,7 @@ def infix_to_postfix(infix):
     return postfix
 
 
-def check_postfix(postfix):
+def evaluate_postfix(postfix):
     stack = []
     for o in postfix:
         p = get_priority(o)
@@ -64,19 +64,29 @@ def check_postfix(postfix):
         elif p == 1:
             b = stack.pop()
             a = stack.pop()
-            c = a.or_with(b)
+            c = a.disjunction(b)
             stack.append(c)
         elif p == 2:
             b = stack.pop()
             a = stack.pop()
-            c = a.and_with(b)
+            c = a.conjunction(b)
             stack.append(c)
         elif p == 3:
             b = stack.pop()
             a = stack.pop()
-            a = a.not_self()
-            c = a.or_with(b)
+            c = a.negate().disjunction(b)
             stack.append(c)
+        elif p == 4:
+            b = stack.pop()
+            a = stack.pop()
+            c = a.negate().disjunction(b)
+            d = b.negate().disjunction(a)
+            e = c.conjunction(d)
+            stack.append(e)
+        elif p == 5:
+            a = stack.pop()
+            a = a.negate()
+            stack.append(a)
     return stack.pop()
 
 
@@ -88,5 +98,5 @@ for line in lines:
     print(infix)
     postfix = infix_to_postfix(infix)
     print(postfix)
-    formula = check_postfix(postfix)
+    formula = evaluate_postfix(postfix)
     print(formula)

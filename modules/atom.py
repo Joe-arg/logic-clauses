@@ -3,7 +3,7 @@ class Atom:
         self.name = name
         self.status = True
 
-    def deny(self):
+    def negate(self):
         self.status = not self.status
 
     def get_clone(self):

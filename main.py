@@ -100,10 +100,7 @@ for line in lines:
     print(postfix)
     formula = evaluate_postfix(postfix)
     print(formula)
-    c = Clause()
-    c.add_atom(Atom('c'))
-    formula.add_clause(c)
-    print(formula)
     print(formula.unit_clauses())
     print(formula)
-    print(formula.cert)
+    for a in formula.cert.values():
+        print(a)

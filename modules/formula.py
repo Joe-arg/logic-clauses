@@ -51,15 +51,15 @@ class Formula:
             pass
 
     def unit_clauses(self):
-        f = Formula()
-        uc = False
-        for c in self.clauses:
-            if len(c.atoms) == 1:
-                uc = True
-                a = list(c.atoms.values())[0]
-                self.cert[a.name] = a
-                self.remove_atom(a)
-        return f if uc else None
+        enter = False
+        uc = [c for c in self.clauses if len(c.atoms) == 1]
+        while uc:
+            enter = True
+            a = list(uc[0].atoms.values())[0]
+            self.cert[a.name] = a
+            self.simplify(a)
+            uc = [c for c in self.clauses if len(c.atoms) == 1]
+        return enter
 
     def pure_literal(self):
         pl = False
@@ -67,13 +67,15 @@ class Formula:
             for a in c.atoms.values:
                 pass
 
-    def remove_atom(self, a):
+    def simplify(self, a):
+        sf = []
         for c in self.clauses:
-            if a.name in c.atoms:
-                if a.status == c.atoms[a.name].status:
-                    self.clauses.remove(c)
-                else:
-                    del c.atoms[a.name]
+            if a.name not in c.atoms:
+                sf.append(c)
+            elif a.status != c.atoms[a.name].status:
+                del c.atoms[a.name]
+                sf.append(c)
+        self.clauses = sf
 
     def __str__(self):
         names = []

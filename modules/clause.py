@@ -3,16 +3,10 @@ class Clause:
         self.atoms = {}
 
     def add_atom(self, atom):
-        self.atoms[atom.name] = atom
-
-    def disjunction(self, clause):
-        pass
-
-    def conjunction(self, clause):
-        c = self.get_clone()
-        for a in clause.atoms.values():
-            c.add_atom(a.get_clone())
-        return c
+        if atom.name not in self.atoms:
+            self.atoms[atom.name] = atom
+            return True
+        return False
 
     def get_clone(self):
         c = Clause()

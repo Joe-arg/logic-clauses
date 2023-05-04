@@ -87,7 +87,7 @@ def evaluate_postfix(postfix):
 
 
 pattern = r'\||&|>|=|~|\(|\)|\w+'
-file = open("data/formula1")
+file = open("data/formula2")
 lines = file.readlines()
 for line in lines:
     infix = re.findall(pattern, line)
@@ -96,7 +96,8 @@ for line in lines:
     # print(postfix)
     formula = evaluate_postfix(postfix)
     print(formula)
-    print(formula.unit_clauses())
-    print(formula)
-    for a in formula.cert.values():
-        print(a)
+    # print(formula.unit_clauses())
+    # print(formula.pure_literal())
+    print(formula.davis_putnam())
+    formula.print_cert()
+    print()

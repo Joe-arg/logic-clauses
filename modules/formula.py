@@ -1,3 +1,4 @@
+from modules.atom import Atom
 from modules.clause import Clause
 
 
@@ -5,6 +6,7 @@ class Formula:
     def __init__(self):
         self.clauses = []
         self.cert = {}
+        self.bif = 0
 
     def add_clause(self, clause):
         self.clauses.append(clause)
@@ -47,7 +49,19 @@ class Formula:
         return f
 
     def davis_putnam(self):
-        pass
+        empty = False
+        for c in self.clauses:
+            if not c.atoms:
+                empty = True
+                break
+        if empty:
+            if self.bif == 0:
+                return False
+        if not empty and not self.clauses:
+            return True
+        self.unit_clauses()
+        self.pure_literal()
+        return self.davis_putnam()
 
     def unit_clauses(self):
         enter = False
@@ -70,6 +84,13 @@ class Formula:
                         pl[a.name] = None
                 else:
                     pl[a.name] = a.status
+        for name, status in pl.items():
+            if status is not None:
+                enter = True
+                a = Atom(name)
+                a.status = status
+                self.cert[name] = a
+                self.simplify(a)
         return enter
 
     def simplify(self, a):
@@ -81,6 +102,12 @@ class Formula:
                 del c.atoms[a.name]
                 sf.append(c)
         self.clauses = sf
+
+    def print_cert(self):
+        names = []
+        for atom in self.cert.values():
+            names.append(str(atom))
+        print(', '.join(names))
 
     def __str__(self):
         names = []

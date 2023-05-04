@@ -6,7 +6,7 @@ class Formula:
     def __init__(self):
         self.clauses = []
         self.cert = {}
-        self.bif = 0
+        self.forks = 0
 
     def add_clause(self, clause):
         self.clauses.append(clause)
@@ -49,19 +49,36 @@ class Formula:
         return f
 
     def davis_putnam(self):
-        empty = False
+        empty_clause = False
         for c in self.clauses:
             if not c.atoms:
-                empty = True
+                empty_clause = True
                 break
-        if empty:
-            if self.bif == 0:
+        if empty_clause:
+            if self.forks == 1:
+                return self.fork()
+            else:
                 return False
-        if not empty and not self.clauses:
+        elif self.clauses:
+            if self.unit_clauses() or self.pure_literal():
+                return self.davis_putnam()
+            else:
+                return self.fork()
+        else:
             return True
-        self.unit_clauses()
-        self.pure_literal()
-        return self.davis_putnam()
+
+    def fork(self):
+        try:
+            a = list(self.clauses[0].atoms.values())[0]
+        except Exception:
+            return False
+        f1, f2 = self.get_clone()
+        f1.cert[a.name] = a
+        f1.simplify(a)
+        a.negate()
+        f2.cert[a.name] = a
+        f2.simplify(a)
+        return f1.davis_putnam() or f2.davis_putnam()
 
     def unit_clauses(self):
         enter = False
@@ -102,6 +119,14 @@ class Formula:
                 del c.atoms[a.name]
                 sf.append(c)
         self.clauses = sf
+
+    def get_clone(self):
+        f = Formula()
+        f.cert = self.cert
+        f.forks = self.forks + 1
+        for c in self.clauses:
+            f.add_clause(c.get_clone())
+        return f, f
 
     def print_cert(self):
         names = []

@@ -6,6 +6,8 @@ class Clause:
         if atom.name not in self.atoms:
             self.atoms[atom.name] = atom
             return True
+        if atom.status == self.atoms[atom.name].status:
+            return True
         return False
 
     def get_clone(self):

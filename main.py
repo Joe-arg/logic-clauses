@@ -32,17 +32,13 @@ def infix_to_postfix(infix):
         if p == -1:
             stack.append(o)
         elif p == -2:
-            while stack and stack[-1] != '(':
+            while stack[-1] != '(':
                 postfix.append(stack.pop())
-            if stack:
-                stack.pop()
+            stack.pop()
         elif p:
-            if not stack or p > get_priority(stack[-1]):
-                stack.append(o)
-            else:
-                while stack and p < get_priority(stack[-1]):
-                    postfix.append(stack.pop())
-                stack.append(o)
+            while stack and p <= get_priority(stack[-1]) != -1:
+                postfix.append(stack.pop())
+            stack.append(o)
         else:
             postfix.append(o)
     while stack:
@@ -95,9 +91,9 @@ file = open("data/formula1")
 lines = file.readlines()
 for line in lines:
     infix = re.findall(pattern, line)
-    print(infix)
+    # print(infix)
     postfix = infix_to_postfix(infix)
-    print(postfix)
+    # print(postfix)
     formula = evaluate_postfix(postfix)
     print(formula)
     print(formula.unit_clauses())

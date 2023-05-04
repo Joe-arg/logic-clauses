@@ -31,9 +31,9 @@ class Formula:
         for ca in self.clauses:
             for cb in formula.clauses:
                 c = ca.get_clone()
-                add = False
+                add = True
                 for a in cb.atoms.values():
-                    add = c.add_atom(a.get_clone())
+                    add = c.add_atom(a.get_clone()) and add
                 if add:
                     f.add_clause(c)
         return f
@@ -47,8 +47,7 @@ class Formula:
         return f
 
     def davis_putnam(self):
-        for c in self.clauses:
-            pass
+        pass
 
     def unit_clauses(self):
         enter = False
@@ -62,10 +61,16 @@ class Formula:
         return enter
 
     def pure_literal(self):
-        pl = False
+        enter = False
+        pl = {}
         for c in self.clauses:
-            for a in c.atoms.values:
-                pass
+            for a in c.atoms.values():
+                if a.name in pl:
+                    if a.status != pl[a.name]:
+                        pl[a.name] = None
+                else:
+                    pl[a.name] = a.status
+        return enter
 
     def simplify(self, a):
         sf = []

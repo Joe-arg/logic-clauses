@@ -70,15 +70,20 @@ class Formula:
     def fork(self):
         try:
             a = list(self.clauses[0].atoms.values())[0]
-        except Exception:
+        except:
             return False
-        f1, f2 = self.get_clone()
+        f1 = self.get_clone()
+        a = a.get_clone()
         f1.cert[a.name] = a
         f1.simplify(a)
+        if f1.davis_putnam():
+            return True
+        f2 = self.get_clone()
+        a = a.get_clone()
         a.negate()
         f2.cert[a.name] = a
         f2.simplify(a)
-        return f1.davis_putnam() or f2.davis_putnam()
+        return f2.davis_putnam()
 
     def unit_clauses(self):
         enter = False
@@ -126,7 +131,7 @@ class Formula:
         f.forks = self.forks + 1
         for c in self.clauses:
             f.add_clause(c.get_clone())
-        return f, f
+        return f
 
     def print_cert(self):
         names = []

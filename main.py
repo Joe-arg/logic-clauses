@@ -96,9 +96,8 @@ for line in lines:
     # print(postfix)
     formula = evaluate_postfix(postfix)
     print(formula)
-    # print(formula.unit_clauses())
-    # print(formula.pure_literal())
-    # formula.fork()
-    print(formula.davis_putnam())
-    formula.print_cert()
+    if formula.davis_putnam():
+        formula.print_cert()
+    else:
+        print('The formula is not satisfiable')
     print()

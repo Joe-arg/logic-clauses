@@ -1,1 +1,1 @@
-dinero & tiempo = cine
+(~p | ~r | ~s) & (~p | q | s | t) & (p | ~r) & (~q | r) & (~q | ~r | s) & (q | r)
